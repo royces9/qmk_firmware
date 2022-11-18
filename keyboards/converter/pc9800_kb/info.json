@@ -1,0 +1,29 @@
+{
+    "manufacturer": "Royce Sato",
+    "keyboard_name": "pc9800_kb",
+    "maintainer": "royces9",
+    "bootloader": "halfkay",
+    "diode_direction": "COL2ROW",
+    "features": {
+        "bootmagic": true,
+        "command": false,
+        "console": false,
+        "extrakey": true,
+        "mousekey": true,
+        "nkro": true
+    },
+    "processor": "atmega32u4",
+    "url": "",
+    "usb": {
+        "device_version": "1.0.0",
+        "pid": "0xB33F",
+        "vid": "0xFEED"
+    },
+    "layouts": {
+        "LAYOUT": {
+            "layout": [
+                { "matrix": [0, 0], "x": 0, "y": 0 },
+            ]
+        }
+    }
+}
