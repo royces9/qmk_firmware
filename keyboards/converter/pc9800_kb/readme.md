@@ -1,15 +1,8 @@
 # pc9800_kb
 
-![pc9800_kb](imgur.com image replace me!)
-
-*A short description of the keyboard/project*
 A converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to be dissassembled; the attached mini-DIN 8 cable can be plugged into the converter for use via USB.
 A breakout board/cable helps with this!
 
-
-* Keyboard Maintainer: [Royce Sato](https://github.com/royces9)
-* Hardware Supported: *The PCBs, controllers supported*
-* Hardware Availability: *Links to where you can find this hardware*
 
 Make example for this keyboard (after setting up your build environment):
 
@@ -21,16 +14,15 @@ Flashing example for this keyboard:
 
 See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
 
-## Bootloader
-
-Enter the bootloader in 3 ways:
-
-* **Bootmagic reset**: Hold down the key at (0,0) in the matrix (usually the top left key or Escape) and plug in the keyboard
-* **Physical reset button**: Briefly press the button on the back of the PCB - some may have pads you must short instead
-* **Keycode in layout**: Press the key mapped to `QK_BOOT` if it is available
 
 ## Hardware setup
-I used a teensy 2.0, so the following instructions will assume the same. A different board/chip should work, with some work.
+# Hardware used
+* [Teensy 2.0] (https://www.pjrc.com/store/teensy.html) ※
+* [DIN breakout board](https://booth.pm/ja/items/3534917)
+
+※ The keyboard for the PC9800 requires 5V for data high. Newer Teensy boards (3.x, 4.x) have 3.3V, which may or may not work. I haven't tested it. 
+
+The following pins assume usage of the Teensy 2.0. A different board/chip should work, with some work.
 
 The mini-DIN 8 cable on the keyboard has a total of 8 pins, of which 6 are used.
 
@@ -45,8 +37,6 @@ They can be connected as follows:
 | 6 | NC | None |
 | 7 | NC | None |
 | 8 | 5V | Vcc |
-
-The firmware can be flashed, and the keyboard should work normally.
 
 
 ## Implementation details

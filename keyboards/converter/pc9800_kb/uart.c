@@ -44,8 +44,14 @@ void uart_init(uint32_t baud)
 	cli();
 	UBRR1 = (F_CPU / 4 / baud - 1) / 2;
 	UCSR1A = (1<<U2X1);
+	
+	//enable receiver, enable receive interrupt
 	UCSR1B = (1<<RXEN1) | (1<<RXCIE1);
+
+	//set receive packet
+	//1 start bit, 8 data bits, 1 odd parity bit, 1 stop bit
 	UCSR1C = (1<<UCSZ11) | (1<<UCSZ10) | (1<<UPM11) | (1<<UPM10);
+
 	rx_buffer_head = rx_buffer_tail = 0;
 	sei();
 }
