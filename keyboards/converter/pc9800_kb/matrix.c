@@ -4,9 +4,12 @@
 #include "matrix.h"
 #include "setup_pc9800_kb.h"
 
+#include "print.h"
+
 static matrix_row_t matrix[MATRIX_ROWS];
 
-void handle_byte(uint8_t byte) {
+//idk why but this is necessary
+void __attribute__ ((optimize("O0"))) handle_byte(uint8_t byte) {
 	//get bottom 4 bits
 	uint8_t row = byte & 0x0F;
 
@@ -47,7 +50,6 @@ uint8_t matrix_scan(void) {
 	handle_byte(byte);
 
 	RDY_LOW();
-
 
 	matrix_scan_quantum();
 	return 0;
