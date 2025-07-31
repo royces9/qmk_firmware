@@ -1,9 +1,7 @@
-#include "hardware/gpio.h"
-
 #include "uart.h"
 
 #include "setup_pc9800_kb.h"
-#include "pc9800_kb.h"
+
 
 
 void init_nec9802(void) {
@@ -50,5 +48,7 @@ void keyboard_post_init_kb(void) {
 	keyboard_post_init_user();
 }
 
+void keyboard_pre_init_user(void) {
+}
 void keyboard_post_init_user(void) {
 }
