@@ -35,8 +35,6 @@ void matrix_init(void) {
 	for(int i = 0; i < MATRIX_ROWS; ++i) {
 		matrix[i] = 0;
 	}
-	
-	matrix_init_quantum();
 }
 
 uint8_t matrix_scan(void) {
@@ -47,13 +45,12 @@ uint8_t matrix_scan(void) {
 	//RDY_HIGH();
 	gpio_put(RDY_PIN, 1);
 
-	uint8_t byte = uart_getchar();
+	uint8_t byte = uart_read();
 	handle_byte(byte);
 
 	//RDY_LOW();
 	gpio_put(RDY_PIN, 0);
 
-	matrix_scan_quantum();
 	return 0;
 }
 

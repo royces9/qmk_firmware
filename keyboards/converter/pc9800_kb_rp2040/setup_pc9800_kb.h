@@ -1,5 +1,7 @@
 #pragma once
 
+#include "hardware/gpio.h"
+
 #define BAUD_RATE 19200
 
 //RTY on D0
@@ -24,3 +26,6 @@
 void init_nec9802(void);
 void keyboard_pre_init_kb(void);
 void keyboard_post_init_kb(void);
+
+void keyboard_pre_init_user(void);
+void keyboard_post_init_user(void);

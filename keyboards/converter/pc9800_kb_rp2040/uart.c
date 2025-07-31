@@ -25,7 +25,8 @@
 // Version 1.1: Add support for Teensy 2.0, minor optimizations
 
 
-#include "hardware/uart.h"
+#include "hardware/gpio.h"
+//#include "hardware/uart.h"
 
 #include "uart.h"
 

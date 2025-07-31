@@ -18,7 +18,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		JP_MINS, JP_LBRC, JP_C   , KC_LEFT   , KC_KP_2 , KC_F10 , \
 		JP_CIRC, KC_ENT , JP_V   , KC_RGHT   , KC_KP_3 , \
 		JP_YEN , JP_A   , JP_B   , KC_DOWN   , KC_PEQL , \
-		KC_BSPC, JP_S   , JP_N   , KC_NUMLOCK, KC_KP_0 , KC_HOME, \
+		KC_BSPC, JP_S   , JP_N   , KC_NUM_LOCK, KC_KP_0 , KC_HOME, \
 		KC_TAB , JP_D   , JP_M   , KC_HELP   , KC_PCMM
 	       ),
 };
