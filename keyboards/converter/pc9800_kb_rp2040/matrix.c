@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#include "hardware/timer.h"
 #include "uart.h"
 #include "matrix.h"
 #include "setup_pc9800_kb.h"
@@ -47,9 +48,8 @@ uint8_t matrix_scan(void) {
 	uint8_t byte = uart_read();
 	handle_byte(byte);
 
-	static uint16_t key_timer;
-	key_timer = timer_read();
-	while(timer_elapsed(key_timer) < 2);
+	//wait 4us
+	busy_wait_us_32(4);
 
 	gpio_put(RDY_PIN, 0);
 
