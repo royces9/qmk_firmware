@@ -1,0 +1,29 @@
+{
+    "manufacturer": "Royce Sato",
+    "keyboard_name": "myadb_converter",
+    "maintainer": "royces9",
+    "url": "",
+    "bootloader": "rp2040",
+    "processor": "RP2040",
+    "diode_direction": "COL2ROW",
+    "usb": {
+	"device_version": "1.0.0",
+	"pid": "0xB33F",
+	"vid": "0xFEED",
+    }
+    "layouts": {
+	"LAYOUT": {
+	    "layout": [
+		{ "label": "a", "matrix": [0, 0], "x": 0, "y": 0},
+		{ "label": "s", "matrix": [0, 1], "x": 0, "y": 0},
+		{ "label": "d", "matrix": [0, 2], "x": 0, "y": 0},
+		{ "label": "f", "matrix": [0, 3], "x": 0, "y": 0},
+		{ "label": "h", "matrix": [0, 4], "x": 0, "y": 0},
+		{ "label": "g", "matrix": [0, 5], "x": 0, "y": 0},
+		{ "label": "z", "matrix": [0, 6], "x": 0, "y": 0},
+		{ "label": "x", "matrix": [0, 7], "x": 0, "y": 0},
+		{ "label": "c", "matrix": [0, 8], "x": 0, "y": 0},
+	    ]
+	}
+    }
+}
