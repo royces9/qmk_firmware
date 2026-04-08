@@ -1,4 +1,7 @@
+#include "adb.h"
+
 #include "hardware/timer.h"
+
 
 void init_adb(void) {
 	//set data pin low for >3ms
@@ -10,8 +13,8 @@ void init_adb(void) {
 
 	//wait 1s for device to ready???
 	busy_wait_ms(1000);
-	
 }
+
 
 void keyboard_pre_init_kb(void) {
 	init_adb();

@@ -54,16 +54,9 @@ uint8_t handle_byte(void) {
 }
 
 uint8_t matrix_scan(void) {
-	//pull data low for 800us
-	data_low(); //not implemented yet
-	busy_wait_us(800);
+	send_attn_sync();
 
-	//pull data back high for 70us
-	data_high();
-	busy_wait_us(800);
-
-	uint8_t byte = handle_byte();
-
+	send_cmd_talk(addr, reg);
 	
 	return 0;
 }
