@@ -10,38 +10,38 @@ Make example for this keyboard (after setting up your build environment):
 
 Flashing example for this keyboard:
 
-    make converter/pc9800_kb_rp2040:default:flash
+    After making, a .uf2 file is output. Mount the RP2040 as a usb device and copy the file like you would a usb drive. Unmount and it is now flashed.
 
 See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
 
 
 ## Hardware setup
 # Hardware used
-* [Teensy 2.0] (https://www.pjrc.com/store/teensy.html) ※
+* [RP2040-Zero] (https://www.waveshare.com/rp2040-zero.htm) ※
 * [DIN breakout board](https://booth.pm/ja/items/3534917)
 
-※ The keyboard for the PC9800 requires 5V for data high. Newer Teensy boards (3.x, 4.x) have 3.3V, which may or may not work. I haven't tested it. 
+※ The keyboard for the PC9800 requires 5V for data high. The Waveshare RP2040-Zero has a 5V out to drive the 3.3V logic, or something, idk how electricity works.
 
-The following pins assume usage of the Teensy 2.0. A different board/chip should work, with some work.
+The following pins assume usage of the Waveshare RP2040-Zero. A different board/chip should work, with some work.
 
 The mini-DIN 8 cable on the keyboard has a total of 8 pins, of which 6 are used.
 
 They can be connected as follows:
 | Pin # | Name | Teensy port |
 |---|---|---|
-| 1 | RST | D7 |
+| 1 | RST | 15 |
 | 2 | Ground | Ground |
-| 3 | RDY | D6 |
-| 4 | RXD | D2 |
-| 5 | RTY | D0 |
+| 3 | RDY | 14 |
+| 4 | RXD | 1 |
+| 5 | RTY | 8 |
 | 6 | NC | None |
 | 7 | NC | None |
-| 8 | 5V | Vcc |
+| 8 | 5V | 5V |
 
 
 ## Implementation details
 The main source of information I used is the 「PC-9800シリーズ テクニカルデータブック HARDWARE編」.
-The keyboard sends serial data through the RXD pin (pin 4), with a baud rate of 19200 kb/s.
+The keyboard sends serial data through the RXD pin, with a baud rate of 19200 kb/s.
 Data frames have a start bit, 8 bits of data, a parity bit, and a stop bit.
 The parity bit is odd.
 
@@ -53,4 +53,3 @@ When the RTY pin is low, it tells the keyboard to resend the last code it sent. 
 The RST pin sets the keyboard to a starting state. It must be set low for at least 13us to reset the keyboard. The firmware keeps the RST pin high.
 
 Data is 8 bits, with the first 7 bits forming the keycode, and the last bit denoting either make (0, key press) or break (1, key release).
-
