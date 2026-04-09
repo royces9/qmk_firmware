@@ -35,8 +35,6 @@ void matrix_init(void) {
 	for(int i = 0; i < MATRIX_ROWS; ++i) {
 		matrix[i] = 0;
 	}
-	
-	matrix_init_quantum();
 }
 
 uint8_t matrix_scan(void) {
@@ -51,20 +49,5 @@ uint8_t matrix_scan(void) {
 
 	RDY_LOW();
 
-	matrix_scan_quantum();
 	return 0;
-}
-
-__attribute__ ((weak)) void matrix_init_kb(void) {
-	matrix_init_user();
-}
-
-__attribute__ ((weak)) void matrix_scan_kb(void) {
-	matrix_scan_user();
-}
-
-__attribute__ ((weak)) void matrix_init_user(void) {
-}
-
-__attribute__ ((weak)) void matrix_scan_user(void) {
 }

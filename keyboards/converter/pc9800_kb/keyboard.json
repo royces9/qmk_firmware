@@ -1,8 +1,8 @@
 {
     "manufacturer": "Royce Sato",
-    "keyboard_name": "pc9800_kb",
+    "keyboard_name": "pc9800_kb_rp2040",
     "maintainer": "royces9",
-    "bootloader": "halfkay",
+    "bootloader": "rp2040",
     "diode_direction": "COL2ROW",
     "features": {
         "bootmagic": true,
@@ -12,7 +12,7 @@
         "mousekey": true,
         "nkro": true
     },
-    "processor": "atmega32u4",
+    "processor": "RP2040",
     "url": "",
     "usb": {
         "device_version": "1.0.0",
@@ -33,7 +33,7 @@
 
                 { "matrix": [1, 0], "x": 1, "y": 0},
                 { "matrix": [1, 1], "x": 1, "y": 1},
-                { "matrix": [2, 2], "x": 1, "y": 2},
+                { "matrix": [1, 2], "x": 1, "y": 2},
                 { "matrix": [1, 3], "x": 1, "y": 3},
                 { "matrix": [1, 4], "x": 1, "y": 4},
                 { "matrix": [1, 5], "x": 1, "y": 5},
