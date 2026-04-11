@@ -2,6 +2,7 @@
 
 #include "keymap_japanese.h"
 
+//MYCAPS set in process_record_kb set in pc9800_kb.c
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	LAYOUT( \
 		KC_ESC , JP_Q   , JP_F   , JP_COMM, KC_MINUS, KC_NO  , KC_NO, KC_LEFT_SHIFT, \

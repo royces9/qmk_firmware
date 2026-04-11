@@ -2,7 +2,6 @@
 
 #include "setup_pc9800_kb.h"
 
-
 void init_nec9802(void) {
 	//RTY
 	gpio_init(RTY_PIN);
