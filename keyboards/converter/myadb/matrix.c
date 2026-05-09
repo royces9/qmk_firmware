@@ -18,45 +18,30 @@ void matrix_init(void) {
 	for(int i = 0; i < MATRIX_ROWS; ++i) {
 		matrix[i] = 0;
 	}
-}
 
-uint8_t handle_byte(void) {
-	uint8_t out = 0;
-	for(int i = 0; i < 8; ++i) {
-		uint8_t cond = true;
-		uint32_t start = time_us_32();
-		uint8_t val = 0;
-		do {
-			val = gpio_get();
-		} while (!val);
-
-		val = 1;
-		uint32_t mid = time_us_32();
-
-		do {
-			val = gpio_get();
-		} while (val);
-
-		uint32_t end = time_us_32();
-		
-		uint32_t head = mid - start;
-		uint32_t tail = end - mid;
-
-		uint8_t bit = 0;
-		if( head < tail) {
-			bit = 1;
-		}
-		
-		out |= bit << i;
-	}
-	
-	return out;
+	matrix_init_kb();
 }
 
 uint8_t matrix_scan(void) {
-	send_attn_sync();
+	sig_attn();
+	sig_sync();
 
-	send_cmd_talk(addr, reg);
+	//keyboard default address is 2
+	cmd_talk(2, 0);
 	
 	return 0;
+}
+
+__attribute__((weak)) void matrix_init_kb(void) {
+	matrix_init_user();
+}
+
+__attribute__((weak)) void matrix_scan_kb(void) {
+	matrix_scan_user();
+}
+
+__attribute__((weak)) void matrix_init_user(void) {
+}
+
+__attribute__((weak)) void matrix_scan_user(void) {
 }
