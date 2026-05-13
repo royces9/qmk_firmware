@@ -23,11 +23,26 @@ void matrix_init(void) {
 }
 
 uint8_t matrix_scan(void) {
+	uint8_t data[10] = {0};
+
 	sig_attn();
 	sig_sync();
 
 	//keyboard default address is 2
 	cmd_talk(2, 0);
+
+	uint32_t start = time_us_32();
+	uint8_t val = 1;
+
+	enable_rx();
+
+	while( (time_us_32() - start) < 260 ) {
+		val = gpio_get(RX_PIN);
+		if(!val) {
+			read_data(data);
+		}
+	}
+	
 	
 	return 0;
 }
