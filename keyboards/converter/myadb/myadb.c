@@ -1,8 +1,9 @@
-#include "setup_adb.h"
 #include "myadb.h"
 
 #include "hardware/gpio.h"
 #include "hardware/timer.h"
+
+#include "print.h"
 
 void cmd_sendreset(uint8_t address, uint8_t reg) {
 	sig_attn();
@@ -114,79 +115,50 @@ void send_byte_adb(uint8_t byte) {
 }
 
 
-void read_data(uint8_t *data) {
-	uint8_t flag = 0;
+uint8_t read_data(uint64_t *data) {
+	uint8_t flag = 1;
 	uint8_t val = 0;
 
 	//skip the start bit
 	while(!(val=gpio_get(RX_PIN)));
-	while(val=gpio_get(RX_PIN));
+	while( (val=gpio_get(RX_PIN)) );
 	
 	//start grabbing data
-	uint8_t flag = 0;
-
 	uint16_t low_count = 0;
 	uint16_t high_count = 0;
 
-	uint8_t data_ind1 = 0;
-	uint8_t data_ind2 = 0;
+	int i = 0;
+	for(i = 0; i < (4 * sizeof(*data)) && flag; ++i) {
+		uint8_t data_ind1 = i / sizeof(data_ind1);
+		uint8_t data_ind2 = i % sizeof(data_ind1);
+		
+		//when pin is low
+		while(!(val=gpio_get(RX_PIN))) {
+			++low_count;
+			busy_wait_us_32(1);
+		}
 
-	for(int i = 0; i < 8 || flag; ++i) {
-		for(int j = 0; j < 8; ++j) {
-			while(!(val=gpio_get(RX_PIN))) {
-				++low_count;
-				busy_wait_us_32(1);
+		//when pin is high
+		while( (val=gpio_get(RX_PIN)) ) {
+			++high_count;
+			if(high_count > 100) {
+				flag = 0;
+				break;
 			}
-			while(val=gpio_get(RX_PIN)) {
-				++high_count;
-				if(high_count > 100) {
-					flag = 1
-						break;
-				}
-				busy_wait_us_32(1);
-			}
-			if(low_count < high_count) {
-				data[i] |= (1 << j);
-				//data[data_ind1] |= (1 << data_ind2);
-			}
+			busy_wait_us_32(1);
+		}
+
+		//assuming higher counter->longer time
+		//high_count is higher is a 1
+		if(low_count < high_count) {
+			data[data_ind1] |= (1 << data_ind2);
 		}
 	}
+
+	//return number of bytes read
+	return i / 8;
 }
 
-uint8_t handle_byte(void) {
-	enable_rx();
-	uint8_t out = 0;
-	for(int i = 0; i < 8; ++i) {
-                //uint8_t cond = true;
-                uint32_t start = time_us_32();
-                uint8_t val = 0;
-                do {
-                        val = gpio_get(RX_PIN);
-                } while (!val);
-
-                val = 1;
-                uint32_t mid = time_us_32();
-
-                do {
-                        val = gpio_get(RX_PIN);
-                } while (val);
-
-                uint32_t end = time_us_32();
-
-                uint32_t head = mid - start;
-                uint32_t tail = end - mid;
-
-                uint8_t bit = 0;
-                if( head < tail) {
-                        bit = 1;
-                }
-
-                out |= bit << i;
-	}
-
-	disable_rx();
-        return out;
-}
 
 void enable_rx(void) {
 	gpio_put(EN_PIN, 1);
@@ -194,4 +166,43 @@ void enable_rx(void) {
 
 void disable_rx(void) {
 	gpio_put(EN_PIN, 0);
+}
+
+
+void init_pins(void) {
+        gpio_init(TX_PIN);
+        gpio_set_dir(TX_PIN, GPIO_OUT);
+        gpio_put(TX_PIN, 0);
+
+        gpio_init(RX_PIN);
+        gpio_set_dir(RX_PIN, GPIO_IN);
+
+        gpio_init(EN_PIN);
+        gpio_set_dir(EN_PIN, GPIO_OUT);
+        gpio_put(EN_PIN, 0);
+}
+
+void init_adb(void) {
+        init_pins();
+
+        //set data pin low for >3ms
+	set_low(0);
+        busy_wait_ms(3);
+
+        //set data pin back high
+	set_high(0);
+
+        //wait 1s for device to ready??
+	busy_wait_ms(1000);
+
+	cmd_listen(2, 3);
+
+	//0b01000010 0x00
+	//0x42 0x00
+	send_byte_adb(0x00);
+	send_byte_adb(0x42);
+}
+
+void keyboard_pre_init_kb(void) {
+        init_adb();
 }
