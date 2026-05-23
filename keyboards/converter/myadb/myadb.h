@@ -26,7 +26,7 @@ void send_zero(void);
 void send_one(void);
 
 void send_byte_adb(uint8_t byte);
-uint8_t read_data(uint64_t *data);
+uint8_t read_data(uint8_t *data);
 
 void enable_rx(void);
 void disable_rx(void);

@@ -43,45 +43,46 @@ void matrix_init(void) {
 }
 
 uint8_t matrix_scan(void) {
+	uint32_t scan_start = time_us_32();
 	uint8_t out = 0;
-
-	print("matrix_scan\n");
 
 	//keyboard default address is 2
 	cmd_talk(2, 0);
 
-	uint64_t data[4] = {0};
+	uint8_t data[8] = {0};
 	uint8_t val = 1;
 
 	enable_rx();
 
 	uint32_t start = time_us_32();
-	while( (time_us_32() - start) < 260) {
+
+       	while( (time_us_32() - start) < 260) {
 		val = gpio_get(RX_PIN);
-		uprintf("val: %d\n", val);
 		if(!val) {
-			print("we're in!\n");
 			uint8_t read = read_data(data);
-			for(int i = 0; i < read; ++i) {
-				uint8_t mirrored = mirror_byte[data[i]];
+			if(read) {
+				uint8_t mirrored = mirror_byte[data[0]];
 
-				uint8_t row = mirrored & 0x70 >> 4;
+				uint8_t row = (mirrored & 0x70) >> 4;
 				uint8_t column = mirrored & 0x0F;
-
+				
 				if( mirrored & 0x80 ) {
-					matrix[row] |= 1U << column;
-				} else {
 					matrix[row] &= ~(1U << column);
+				} else {
+					matrix[row] |= 1U << column;
 				}
+				out = 1;
+				break;
 			}
-			break;
-			out = 1;
 		}
 	}
-        uprintf("elapsed: %ld\n", time_us_32() - start);
 	disable_rx();
 
 	matrix_scan_kb();
+	
+	while( (time_us_32() - scan_start) < 11000 );
+
+
 	return out;
 }
 

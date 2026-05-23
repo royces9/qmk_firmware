@@ -24,7 +24,8 @@ void cmd_flush(uint8_t address, uint8_t reg) {
 
 void cmd_listen(uint8_t address, uint8_t reg) {
 	uint8_t send = 0x08;
-	send |= ((address << 4) & (reg & 0x03));
+	send |= (address << 4);
+	send |= (reg & 0x03);
 
 	sig_attn();
 	sig_sync();
@@ -34,7 +35,8 @@ void cmd_listen(uint8_t address, uint8_t reg) {
 
 void cmd_talk(uint8_t address, uint8_t reg) {
 	uint8_t send = 0x0C;
-	send |= ((address << 4) & (reg & 0x03));
+	send |= (address << 4);
+	send |= (reg & 0x03);
 
 	sig_attn();
 	sig_sync();
@@ -105,58 +107,51 @@ void send_byte_adb(uint8_t byte) {
 	};
 
 	for(int i = 0; i < 8; ++i) {
-		//if logical 0
+		//if logical 1
 		if(list[i] & byte) {
-			send_zero();
-		} else {
 			send_one();
+		} else {
+			send_zero();
 		}
 	}
 }
 
 
-uint8_t read_data(uint64_t *data) {
+#define _BYTE_SIZE (8)
+uint8_t read_data(uint8_t *data) {
 	uint8_t flag = 1;
 	uint8_t val = 0;
 
 	//skip the start bit
-	while(!(val=gpio_get(RX_PIN)));
+	while(!(val=gpio_get(RX_PIN)) );
 	while( (val=gpio_get(RX_PIN)) );
 	
 	//start grabbing data
-	uint16_t low_count = 0;
-	uint16_t high_count = 0;
-
 	int i = 0;
-	for(i = 0; i < (4 * sizeof(*data)) && flag; ++i) {
-		uint8_t data_ind1 = i / sizeof(data_ind1);
-		uint8_t data_ind2 = i % sizeof(data_ind1);
-		
-		//when pin is low
-		while(!(val=gpio_get(RX_PIN))) {
-			++low_count;
-			busy_wait_us_32(1);
-		}
+	for(i = 0; (i < (8 * _BYTE_SIZE * sizeof(*data))) && flag; ++i) {
+		int data_ind1 = i / (_BYTE_SIZE * sizeof(*data));
+		int data_ind2 = i % (_BYTE_SIZE * sizeof(*data));
 
-		//when pin is high
+		uint32_t start = time_us_32();
+		while(!(val=gpio_get(RX_PIN)) );
+		uint32_t mid = time_us_32();
 		while( (val=gpio_get(RX_PIN)) ) {
-			++high_count;
-			if(high_count > 100) {
+			if( ((time_us_32() - mid) > 80) ) {
 				flag = 0;
 				break;
 			}
-			busy_wait_us_32(1);
 		}
 
-		//assuming higher counter->longer time
-		//high_count is higher is a 1
-		if(low_count < high_count) {
+		uint32_t low_time = mid - start;
+		if(low_time < 0) {
+			flag = 0;
+		} else if(low_time < 50) {
 			data[data_ind1] |= (1 << data_ind2);
 		}
 	}
 
 	//return number of bytes read
-	return i / 8;
+	return i / _BYTE_SIZE;
 }
 
 
@@ -182,25 +177,31 @@ void init_pins(void) {
         gpio_put(EN_PIN, 0);
 }
 
+
 void init_adb(void) {
         init_pins();
 
         //set data pin low for >3ms
 	set_low(0);
-        busy_wait_ms(3);
+        busy_wait_ms(4);
 
         //set data pin back high
 	set_high(0);
 
+
         //wait 1s for device to ready??
 	busy_wait_ms(1000);
 
+	/*
+	//send command to disable service request to device
 	cmd_listen(2, 3);
+	busy_wait_us_32(200);
 
-	//0b01000010 0x00
-	//0x42 0x00
+	send_one();
 	send_byte_adb(0x00);
 	send_byte_adb(0x42);
+	send_zero();
+	*/
 }
 
 void keyboard_pre_init_kb(void) {

@@ -5,7 +5,7 @@
     "url": "",
     "bootloader": "rp2040",
     "processor": "RP2040",
-    "diode_direction": "COL2ROW",
+    "diode_direction": "ROW2COL",
     "usb": {
 	"device_version": "1.0.0",
 	"pid": "0xB33F",
