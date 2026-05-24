@@ -42,7 +42,34 @@ void matrix_init(void) {
 	matrix_init_kb();
 }
 
+#define BUFFER_SIZE (8)
 uint8_t matrix_scan(void) {
+	static uint8_t input_buffer[BUFFER_SIZE] = {0};
+	static uint8_t buffer_head = 0;
+	static uint8_t buffer_len = 0;
+
+	if(buffer_len) {
+		uint8_t byte = input_buffer[buffer_head];
+		
+		uint8_t row = (byte & 0x70) >> 4;
+		uint8_t column = byte & 0x0F;
+				
+		++buffer_head;
+		buffer_head = buffer_head % BUFFER_SIZE;
+		--buffer_len;
+
+		if(byte == 0xFF) {
+			return 0;
+		}
+
+		if( byte & 0x80 ) {
+			matrix[row] &= ~(1U << column);
+		} else {
+			matrix[row] |= 1U << column;
+		}
+		return 1;
+	}
+		
 	uint32_t scan_start = time_us_32();
 	uint8_t out = 0;
 
@@ -72,6 +99,12 @@ uint8_t matrix_scan(void) {
 					matrix[row] |= 1U << column;
 				}
 				out = 1;
+				if(read == 2) {
+					mirrored = mirror_byte[data[1]];
+					uint8_t write_ind = (buffer_head + buffer_len) % BUFFER_SIZE;
+					++buffer_len;
+					input_buffer[write_ind] = mirrored;
+				}
 				break;
 			}
 		}
