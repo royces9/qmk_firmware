@@ -1,3 +1,7 @@
+#pragma once
+
+#include <stdint.h>
+#include <stdbool.h>
 #include QMK_KEYBOARD_H
 
 enum custom_keycodes {

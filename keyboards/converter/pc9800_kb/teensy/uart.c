@@ -57,7 +57,7 @@ void uart_init(uint32_t baud)
 }
 
 // Receive a byte
-uint8_t uart_getchar(void)
+uint8_t uart_read(void)
 {
         uint8_t c, i;
 

@@ -1,4 +1,4 @@
-#include QMK_KEYBOARD_H
+#include "pc9800_kb.h"
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 	switch(keycode) {

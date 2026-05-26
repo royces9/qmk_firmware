@@ -1,6 +1,7 @@
 #pragma once
 
 #include <avr/io.h>
+#include "uart.h"
 
 #define BAUD_RATE 19200
 
@@ -8,17 +9,16 @@
 //RDY on D6
 //RST on D7
 
-#define RTY_HIGH() (PORTD |= (1U << PORTD0))
-#define RTY_LOW() (PORTD &= ~(1U << PORTD0))
+void __attribute__ ((optimize("O0"))) RTY_high(void);
+void __attribute__ ((optimize("O0"))) RTY_low(void);
 
-#define RDY_HIGH() (PORTD |= (1U << PORTD6))
-#define RDY_LOW() (PORTD &= ~(1U << PORTD6))
+void __attribute__ ((optimize("O0"))) RDY_high(void);
+void __attribute__ ((optimize("O0"))) RDY_low(void);
 
-#define RST_HIGH() (PORTD |= (1U << PORTD7))
-#define RST_LOW() (PORTD &= ~(1U << PORTD7))
-
-#define IS_MAKE(byte) (~(byte) & 0x80)
+void __attribute__ ((optimize("O0"))) RST_high(void);
+void __attribute__ ((optimize("O0"))) RST_low(void);
 
 void init_nec9802(void);
 void keyboard_pre_init_kb(void);
-void keyboard_post_init_kb(void);
+
+void matrix_scan_kb(void);

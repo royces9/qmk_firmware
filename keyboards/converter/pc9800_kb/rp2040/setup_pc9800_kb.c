@@ -1,6 +1,17 @@
+#include "hardware/gpio.h"
+#include "hardware/timer.h"
 #include "uart.h"
 
 #include "setup_pc9800_kb.h"
+
+
+void RDY_high(void) {
+	gpio_put(RDY_PIN, 1);
+}
+
+void RDY_low(void) {
+	gpio_put(RDY_PIN, 0);
+}
 
 void init_nec9802(void) {
 	//RTY
@@ -25,4 +36,10 @@ void keyboard_pre_init_kb(void) {
 
 	//init keyboard state
 	init_nec9802();
+}
+
+
+//need to add some delay for the rp2040, because it is too fast for the kb lol
+void matrix_scan_kb(void) {
+	busy_wait_us_32(4);
 }
