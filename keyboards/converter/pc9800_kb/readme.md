@@ -1,7 +1,6 @@
-# NEC PC-9800 keyboard converter
+# NEC PC-9800 keyboard USB converter
 
-A converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to be dissassembled; the attached mini-DIN 8 cable can be plugged into the converter for use via USB.
-A breakout board/cable helps with this!
+A usb converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to be dissassembled; the attached mini-DIN 8 cable can be plugged into the converter for use via USB.
 
 ## Implementation details
 
@@ -10,7 +9,6 @@ The main source of information I used is the 「PC-9800シリーズ テクニカ
 ### Connector ー mini-DIN 8
 
 The mini-DIN 8 cable on the keyboard has a total of 8 pins, of which 6 are used.
-They can be connected as follows:
 
 
 #### KB cable pins
@@ -54,6 +52,7 @@ The least significant bit is sent first.
 
 `data bit7` is the `make` bit.
 
+|   |       |             |
 |---|-------|-------------|
 | 0 | make  | key press   |
 | 1 | break | key release |
