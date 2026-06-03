@@ -4,52 +4,76 @@ A converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to b
 A breakout board/cable helps with this!
 
 
-Make example for this keyboard (after setting up your build environment):
+## Implementation details
 
-    make converter/pc9800_kb_rp2040:default
+The main source of information I used is the 「PC-9800シリーズ テクニカルデータブック HARDWARE編」.
 
-Flashing example for this keyboard:
-
-    After making, a .uf2 file is output. Mount the RP2040 as a usb device and copy the file like you would a usb drive. Unmount and it is now flashed.
-
-See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
-
-
-## Hardware setup
-# Hardware used
-* [RP2040-Zero] (https://www.waveshare.com/rp2040-zero.htm) ※
-* [DIN breakout board](https://booth.pm/ja/items/3534917)
-
-※ The keyboard for the PC9800 requires 5V for data high. The Waveshare RP2040-Zero has a 5V out to drive the 3.3V logic, or something, idk how electricity works.
-
-The following pins assume usage of the Waveshare RP2040-Zero. A different board/chip should work, with some work.
+## Connector ー mini-DIN 8
 
 The mini-DIN 8 cable on the keyboard has a total of 8 pins, of which 6 are used.
-
 They can be connected as follows:
-| Pin # | Name | Teensy port |
-|---|---|---|
-| 1 | RST | 15 |
-| 2 | Ground | Ground |
-| 3 | RDY | 14 |
-| 4 | RXD | 1 |
-| 5 | RTY | 8 |
-| 6 | NC | None |
-| 7 | NC | None |
-| 8 | 5V | 5V |
+
+### KB cable pins
+  -----
+ /6 7 8\
+( 3 4 5 )
+ \ 1 2 /
+  -----
+
+| Pin # | Name   | Additional info |
+|-------|--------|-----------------|
+| 1     | RST    | Reset. When held low for >13μs, resets board.|
+| 2     | Ground | |
+| 3     | RDY    | Ready. Signal to tell the KB if data is ready to be recieved. Low is ready. High is not ready. |
+| 4     | RXD    | Serial data line. |
+| 5     | RTY    | Retry. When low, data that was just sent is resent. |
+| 6     | NC     | Unused. |
+| 7     | NC     | Unused. |
+| 8     | 5V     | |
+
+## Protocol
+
+| Baud rate  | Data size | Start bit | Stop bit | parity bit |
+|------------|-----------|-----------|----------|------------|
+| 19200 kb/s | 8 bits    | 1 bit     | 1 bit    | 1 bit, odd |
+
+The data frame is structured as below:
+
+```
+______        _______________________________________________________________________
+      |       |      |      |      |      |      |      |      |      |      |
+      | start | data | data | data | data | data | data | data | data | par- | stop
+      |  bit  | bit0 | bit1 | bit2 | bit3 | bit4 | bit5 | bit6 | bit7 | ity  | bit
+      |       |      |      |      |      |      |      |      |      | bit  |
+      |_______|______|______|______|______|______|______|______|______|______|
+```
+
+The least significant bit is sent first.
+
+`data bit7` is the `make` bit.
+
+| 0 | make  | key press |
+| 1 | break | key release |
 
 
-## Implementation details
-The main source of information I used is the 「PC-9800シリーズ テクニカルデータブック HARDWARE編」.
-The keyboard sends serial data through the RXD pin, with a baud rate of 19200 kb/s.
-Data frames have a start bit, 8 bits of data, a parity bit, and a stop bit.
-The parity bit is odd.
+### General flow
 
-Setting the RDY pin to low tells the keyboard that the receiver is ready to receive data, the RDY is then set to high when handling the frame.
-Once the frame is done being processed, the RDY pin is set back to low. The action of the RDY going from 1 to 0, lets the keyboard know to send another frame if ready.
+#### RDY
+The `RDY` pin controls when the keyboard sends data.
 
-When the RTY pin is low, it tells the keyboard to resend the last code it sent. The firmware as it is keeps the RTY pin high.
+`RDY` is set to low to tell the keyboard that data is ready to be received.
+`RDY` is set to high after receiving data from `RXD`, and is then being processed.
+`RDY` is set back to low when input is done being handled. ※
 
-The RST pin sets the keyboard to a starting state. It must be set low for at least 13us to reset the keyboard. The firmware keeps the RST pin high.
+※ `RDY` can not be set back to low too quickly, or this keyboard will stall. A ~4μs delay should be put between setting `RDY` low and setting it back high. 
 
-Data is 8 bits, with the first 7 bits forming the keycode, and the last bit denoting either make (0, key press) or break (1, key release).
+
+#### RST
+
+The `RST` pin resets the keyboard. It must be set low for at least 13μs to reset the keyboard.
+
+#### RTY
+
+The `RTY` pin tells the keyboard to resend the last code it sent.
+When set to low, the last keycode the keyboard is resent.
+
