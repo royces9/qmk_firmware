@@ -1,24 +1,34 @@
-# pc9800_kb
+# NEC PC-9800 keyboard USB converter
 
 A converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to be dissassembled; the attached mini-DIN 8 cable can be plugged into the converter for use via USB.
-A breakout board/cable helps with this!
+
+## Hardware
+
+The following hardware were used:
+* [RP2040-Zero] (https://www.waveshare.com/rp2040-zero.htm) ※
+* [DIN breakout board](https://booth.pm/ja/items/3534917)
+
+## Settings
 
 
-Make example for this keyboard (after setting up your build environment):
+## Make and flash example
 
-    make converter/pc9800_kb_rp2040:default
+### Make
 
-Flashing example for this keyboard:
+```
+make converter/pc9800_kb_rp2040:default
+```
 
-    After making, a .uf2 file is output. Mount the RP2040 as a usb device and copy the file like you would a usb drive. Unmount and it is now flashed.
+### Flash
 
-See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
+```
+mount /dev/ /mnt
+cp output.uf2 /mnt/
+umount /dev/
+```
 
 
 ## Hardware setup
-# Hardware used
-* [RP2040-Zero] (https://www.waveshare.com/rp2040-zero.htm) ※
-* [DIN breakout board](https://booth.pm/ja/items/3534917)
 
 ※ The keyboard for the PC9800 requires 5V for data high. The Waveshare RP2040-Zero has a 5V out to drive the 3.3V logic, or something, idk how electricity works.
 

@@ -52,10 +52,10 @@ The least significant bit is sent first.
 
 `data bit7` is the `make` bit.
 
-|   |       |             |
-|---|-------|-------------|
-| 0 | make  | key press   |
-| 1 | break | key release |
+| Value | Name  | Action      |
+|-------|-------|-------------|
+| 0     | make  | key press   |
+| 1     | break | key release |
 
 
 #### General flow
@@ -67,8 +67,7 @@ The `RDY` pin controls when the keyboard sends data.
 `RDY` is set to high after receiving data from `RXD`, and is then being processed.
 `RDY` is set back to low when input is done being handled. ※
 
-※ `RDY` can not be set back to low too quickly, or this keyboard will stall. A ~4μs delay should be put between setting `RDY` low and setting it back high. 
-
+※ `RDY` can not be set back to low too quickly, or the keyboard may stall. A ~4μs delay should be put between setting `RDY` low and setting it back high. 
 
 ##### RST
 
