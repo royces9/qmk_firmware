@@ -1,6 +1,6 @@
 # NEC PC-9800 keyboard USB converter
 
-A usb converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to be dissassembled; the attached mini-DIN 8 cable can be plugged into the converter for use via USB.
+A USB converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to be dissassembled; the attached mini-DIN 8 cable can be plugged into the converter for use via USB.
 
 ## Implementation details
 
@@ -67,8 +67,8 @@ The `RDY` pin controls when the keyboard sends data.
 `RDY` is set to high after receiving data from `RXD`, and is then being processed.
 `RDY` is set back to low when input is done being handled. 
 
-[!NOTE]
-`RDY` can not be set back to low too quickly, or the keyboard may stall. A ~4μs delay should be put between setting `RDY` low and setting it back high. 
+> [!NOTE]
+> `RDY` can not be set back to low too quickly, or the keyboard may stall. A ~4μs delay should be put between setting `RDY` low and setting it back high. 
 
 ##### RST
 
