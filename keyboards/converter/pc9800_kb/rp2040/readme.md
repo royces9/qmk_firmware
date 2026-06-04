@@ -1,15 +1,6 @@
 # NEC PC-9800 keyboard USB converter
 
-A converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to be dissassembled; the attached mini-DIN 8 cable can be plugged into the converter for use via USB.
-
-## Hardware
-
-The following hardware were used:
-* [RP2040-Zero] (https://www.waveshare.com/rp2040-zero.htm) ※
-* [DIN breakout board](https://booth.pm/ja/items/3534917)
-
-## Settings
-
+A usb converter for the NEC PC-9800 series keyboards. The keyboard doesn't need to be dissassembled; the attached mini-DIN 8 cable can be plugged into the converter for use via USB.
 
 ## Make and flash example
 
@@ -27,39 +18,31 @@ cp output.uf2 /mnt/
 umount /dev/
 ```
 
-
 ## Hardware setup
 
-※ The keyboard for the PC9800 requires 5V for data high. The Waveshare RP2040-Zero has a 5V out to drive the 3.3V logic, or something, idk how electricity works.
+The following hardware were used:
+* [RP2040-Zero] (https://www.waveshare.com/rp2040-zero.htm)
+* [DIN breakout board](https://booth.pm/ja/items/3534917)
+* [TI SN74HC08N](https://www.ti.com/product/SN74HC08/part-details/SN74HC08N)
+* 10kΩ resistor
+* 5.6kΩ resistor※
 
-The following pins assume usage of the Waveshare RP2040-Zero. A different board/chip should work, with some work.
+※ Any resistor around 5kΩ should work fine
 
-The mini-DIN 8 cable on the keyboard has a total of 8 pins, of which 6 are used.
+## Settings
 
-They can be connected as follows:
-| Pin # | Name | Teensy port |
-|---|---|---|
-| 1 | RST | 15 |
-| 2 | Ground | Ground |
-| 3 | RDY | 14 |
-| 4 | RXD | 1 |
-| 5 | RTY | 8 |
-| 6 | NC | None |
-| 7 | NC | None |
-| 8 | 5V | 5V |
+The pins are set as follows:
 
+| KB Pin # | Name    | RP2040-Zero Pin # | Note        |
+|----------|---------|-------------------|-------------|
+| 1        | RST     | 15                |             |
+| 2        | Ground  | GND               |             |
+| 3        | RDY     | 14                |             |
+| 4        | RXD     | 1                 | UART RX pin |
+| 5        | RTY     | 8                 |             |
+| 6        | NC      | -                 |             |
+| 7        | NC      | -                 |             |
+| 8        | 5V      | 5V                |             |
 
-## Implementation details
-The main source of information I used is the 「PC-9800シリーズ テクニカルデータブック HARDWARE編」.
-The keyboard sends serial data through the RXD pin, with a baud rate of 19200 kb/s.
-Data frames have a start bit, 8 bits of data, a parity bit, and a stop bit.
-The parity bit is odd.
+※ The keyboard for the PC9800 asks for 5V and outputs 5V from the `RXD` pin. I haven't tested with 3.3V.
 
-Setting the RDY pin to low tells the keyboard that the receiver is ready to receive data, the RDY is then set to high when handling the frame.
-Once the frame is done being processed, the RDY pin is set back to low. The action of the RDY going from 1 to 0, lets the keyboard know to send another frame if ready.
-
-When the RTY pin is low, it tells the keyboard to resend the last code it sent. The firmware as it is keeps the RTY pin high.
-
-The RST pin sets the keyboard to a starting state. It must be set low for at least 13us to reset the keyboard. The firmware keeps the RST pin high.
-
-Data is 8 bits, with the first 7 bits forming the keycode, and the last bit denoting either make (0, key press) or break (1, key release).
