@@ -21,7 +21,7 @@ umount /dev/
 ## Hardware setup
 
 The following hardware were used:
-* [RP2040\-Zero] (https://www.waveshare.com/rp2040-zero.htm)
+* [RP2040-Zero](https://www.waveshare.com/rp2040-zero.htm)
 * [DIN breakout board](https://booth.pm/ja/items/3534917)
 * [TI SN74HC08N](https://www.ti.com/product/SN74HC08/part-details/SN74HC08N)
 * 10kΩ resistor
