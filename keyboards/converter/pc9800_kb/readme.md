@@ -58,16 +58,17 @@ The least significant bit is sent first.
 | 1     | break | key release |
 
 
-#### General flow
+#### Pin usage
 
 ##### RDY
 The `RDY` pin controls when the keyboard sends data.
 
 `RDY` is set to low to tell the keyboard that data is ready to be received.
 `RDY` is set to high after receiving data from `RXD`, and is then being processed.
-`RDY` is set back to low when input is done being handled. ※
+`RDY` is set back to low when input is done being handled. 
 
-※ `RDY` can not be set back to low too quickly, or the keyboard may stall. A ~4μs delay should be put between setting `RDY` low and setting it back high. 
+[!NOTE]
+`RDY` can not be set back to low too quickly, or the keyboard may stall. A ~4μs delay should be put between setting `RDY` low and setting it back high. 
 
 ##### RST
 
