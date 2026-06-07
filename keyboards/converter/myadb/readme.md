@@ -48,6 +48,7 @@ _____              _____________________________________________________________
 ```
 
 
+| Device Address bits | Command code bits | Register code bits|
 | 7 | 6| 5 |  4 | 3 | 2             | 1 | 0             | Command
 |---|---|---|---|---|---|---|---|---|
 | x | x | x | x | 0 | 0 | 0 | 0 | SendReset |
