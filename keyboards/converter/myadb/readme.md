@@ -48,6 +48,20 @@ _____              _____________________________________________________________
 ```
 
 
+```
+| Device Address bits   |  Command  | Register  |           |
+|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |  Command  |
+-------------------------------------------------------------
+|  x  |  x  |  x  |  x  |  0  |  0  |  0  |  0  | SendReset |
+|  A3 |  A2 |  A1 |  A0 |  0  |  0  |  0  |  1  | Flush     |
+|  x  |  x  |  x  |  x  |  0  |  0  |  1  |  0  | Reserved  |
+|  x  |  x  |  x  |  x  |  0  |  0  |  1  |  1  | Reserved  |
+|  x  |  x  |  x  |  x  |  0  |  1  |  x  |  x  | Reserved  |
+|  A3 |  A2 |  A1 |  A0 |  1  |  0  |  r1 |  r0 | Listen    |
+|  A3 |  A2 |  A1 |  A0 |  1  |  1  |  r1 |  r0 | Talk      |
+```
+
+
 | Device Address bits | Command code bits | Register code bits|
 | 7 | 6| 5 |  4 | 3 | 2             | 1 | 0             | Command
 |---|---|---|---|---|---|---|---|---|
