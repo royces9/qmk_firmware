@@ -62,13 +62,44 @@ _____              _____________________________________________________________
 ```
 
 
-| Device Address bits | Command code bits | Register code bits|
-| 7 | 6| 5 |  4 | 3 | 2             | 1 | 0             | Command
-|---|---|---|---|---|---|---|---|---|
-| x | x | x | x | 0 | 0 | 0 | 0 | SendReset |
-| A3 | A2 | A1 | A0 | 0 | 0 | 0 | 1 | Flush |
-| x | x | x | x | 0 | 0 | 1 | 0 | Reserved |
-| x | x | x | x | 0 | 0 | 1 | 1 | Reserved |
-| x | x | x | x | 0 | 0 | x | x | Reserved |
-| A3 | A2 | A1 | A0 | 1 | 0 | r1 | r0 | Listen |
-| A3 | A2 | A1 | A0 | 1 | 1 | r1 | r0 | Talk |
+#### Attention and Sync
+
+Every command starts with `Attention` and `Sync`.
+`Attention` 800μs low followed by a `Sync` of 65μs high.
+
+
+#### Bit-cell
+
+Each bit is encoded in a bit-cell. Every bit-cell has a low signal, rising edge, high signal, and a falling edge.
+`0` and `1` are distinguished by the lengths of the low and high signals.
+
+| Bit-cell time | 0 low time           | 1 low time           |
+|---------------|----------------------|----------------------|
+|     100μs     | 65% of bit-cell time | 35% of bit-cell time |
+
+
+```
+Logical 0
+_     _____
+|     |   |
+|     |   |
+|     |   |
+|     |   |
+|_____|   |
+
+^     ^   ^
+|     |   |
+|     |   |
+
+Logical 1
+_   _______
+|   |     |
+|   |     |
+|   |     |
+|   |     |
+|___|     |
+
+^   ^     ^
+|   |     |
+
+```
